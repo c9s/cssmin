@@ -9,9 +9,11 @@
 #define STATE_SELECTOR 3
 #define STATE_BLOCK 4
 #define STATE_DECLARATION 5
-#define STATE_COMMENT 6
+#define STATE_PROPERTY_VALUE 6
+#define STATE_COMMENT 7
 
 static int cssmin_peek(cssmin_parser *parser);
+static int cssmin_peek2(cssmin_parser *parser);
 static int cssmin_get(cssmin_parser *parser);
 static void cssmin_advance(cssmin_parser *parser);
 static void cssmin_strip_spaces(cssmin_parser *parser);
@@ -25,11 +27,35 @@ static void cssmin_advance(cssmin_parser *parser)
 }
 
 static void cssmin_strip_spaces(cssmin_parser *parser) {
+    char c;
     while(true) {
-        if (!isspace(cssmin_peek(parser))) {
+        c = cssmin_peek(parser);
+        if (!isspace(c)) {
             break;
         }
         cssmin_advance(parser);
+    }
+}
+
+static void cssmin_strip_comment(cssmin_parser *parser) {
+
+    if (cssmin_peek(parser) == '/' && cssmin_peek2(parser) == '*') {
+        parser->previous_state = parser->state;
+        cssmin_advance(parser);
+        cssmin_advance(parser);
+        char ch1;
+        char ch2;
+        while(true) {
+            ch1 = cssmin_get(parser);
+            ch2 = cssmin_peek(parser);
+            if (ch1 == '*' && ch2 == '/') {
+                cssmin_advance(parser);
+                break;
+            }
+            if (ch1 == EOF) {
+                break;
+            }
+        }
     }
 }
 
@@ -51,6 +77,14 @@ static int cssmin_get(cssmin_parser *parser)
         return '\n';
     }
     return ' ';
+}
+
+static int cssmin_peek2(cssmin_parser *parser)
+{
+    if (parser->pos + 1 < parser->source_len) {
+        return parser->source[parser->pos + 1];
+    }
+    return EOF;
 }
 
 static int cssmin_peek(cssmin_parser *parser)
@@ -118,17 +152,27 @@ static int cssmin_machine(cssmin_parser *parser, int c)
             } else {
                 parser->state = STATE_DECLARATION;
             }
+        case STATE_PROPERTY_VALUE:
+            if (c == ' ' && cssmin_peek(parser) == ' ') {
+                return 0;
+            } else if (c == ' ' && cssmin_peek(parser) == ';') {
+                return 0;
+            } else if (c == ';') {
+                parser->state = STATE_BLOCK;
+                return c;
+            }
+            return c;
+            break;
         case STATE_DECLARATION:
             //support in paren because data can uris have ;
             if(c == '('){
                 parser->in_paren = 1;
             }
             if(parser->in_paren == 0){
-                
-                if( c == ';') {
+                if (c == ';') {
                     parser->state = STATE_BLOCK;
                     //could continue peeking through white space..
-                    if(cssmin_peek(parser) == '}'){
+                    if (cssmin_peek(parser) == '}'){
                         c = 0;
                     }
                 } else if (c == '}') {
@@ -142,6 +186,11 @@ static int cssmin_machine(cssmin_parser *parser, int c)
                   if (cssmin_peek(parser) == ' ') {
                       c = 0;
                   }
+                } else if (c == ':') {
+                    // strip the white space after ":"
+                    parser->state = STATE_PROPERTY_VALUE;
+                    cssmin_strip_spaces(parser);
+                    return c;
                 }
                 
             } else if (c == ')') {
@@ -155,7 +204,6 @@ static int cssmin_machine(cssmin_parser *parser, int c)
                 parser->state = parser->previous_state;
                 cssmin_advance(parser);
             }
-
             // Strip the space after the comment
             cssmin_strip_spaces(parser);
             c = 0;
