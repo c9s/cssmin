@@ -114,7 +114,6 @@ static int cssmin_machine(cssmin_parser *parser, int c)
             } else if (c == '}') {
                 parser->state = STATE_FREE;
                 cssmin_strip_spaces(parser);
-                //fprintf(stdout,"closing bracket found in block\n");
                 break;
             } else {
                 parser->state = STATE_DECLARATION;

@@ -1,11 +1,13 @@
 <?php
 function is($exp, $input, $msg = NULL) {
-    echo $msg ?: "'" . substr($exp, 0, 32) . "'";
-    echo " - ";
-    if ($exp === $input) {
-        echo "ok\n";
-    } else {
-        echo "failed\n";
+    if (!$msg) {
+        $msg = "'" 
+            . ((strlen($exp) > 50) ? (substr($exp, 0, 50) . '...') : $exp) 
+            . "'";
+    }
+    $result = $exp === $input;
+    printf("% -60s - %s\n", $msg, $result ? "ok" : "failed");
+    if (!$result) {
         echo "\tExpected: '$exp'\n";
         echo "\tActual: '$input'\n";
     }
@@ -14,8 +16,20 @@ function is($exp, $input, $msg = NULL) {
 is(".rule{}", cssmin(".rule {  }"));
 is(".rule{}", cssmin(".rule { } /* commment */    "));
 is(".parent .child{-webkit-transform: translateX(200px);}", cssmin(".parent .child { \n-webkit-transform: translateX(200px); \n}"));
-is(".rule{background: #fff;}", cssmin(".rule { 
+is(".rule{color: #000 ;background: #fff ;}", cssmin(".rule { 
 
-    background:      #fff;
+    color:            #000  ;
+    background:      #fff   ;
 
      }"));
+
+
+is(".rule1{background: #fff;}.rule2{filter: Alpha(Opacity=60);}", cssmin("
+.rule1 { 
+    background:      #fff;
+}
+
+.rule2 {
+    filter: Alpha(Opacity=60);
+}
+"));
