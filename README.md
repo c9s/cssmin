@@ -1,5 +1,5 @@
-cssmin
-===========
+CSSMin - A simple & fast css minify extension 
+=============================================
 
 INSTALL
 ---------
