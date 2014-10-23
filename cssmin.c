@@ -79,6 +79,20 @@ static int cssmin_get(cssmin_parser *parser)
     return ' ';
 }
 
+static int cssmin_next_non_space_char(cssmin_parser *parser)
+{
+    int p = parser->pos;
+    char c;
+    while(p < parser->source_len) {
+        c = parser->source[p];
+        if (!isspace(c)) {
+            return c;
+        }
+        p++;
+    }
+    return EOF;
+}
+
 static int cssmin_peek2(cssmin_parser *parser)
 {
     if (parser->pos + 1 < parser->source_len) {
@@ -156,6 +170,14 @@ static int cssmin_machine(cssmin_parser *parser, int c)
             if (c == ' ' && cssmin_peek(parser) == ' ') {
                 return 0;
             } else if (c == ' ' && cssmin_peek(parser) == ';') {
+                return 0;
+            } else if (c == ';' && cssmin_next_non_space_char(parser) == '}' ) {
+                // ignore ";" of the last statment in the block
+                parser->state = STATE_BLOCK;
+                return 0;
+            } else if (c == ';' && cssmin_peek(parser) == '}') {
+                // ignore ";" of the last statment in the block
+                parser->state = STATE_BLOCK;
                 return 0;
             } else if (c == ';') {
                 parser->state = STATE_BLOCK;
