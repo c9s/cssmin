@@ -24,7 +24,8 @@ is(".rule{padding:1px 2px 3px 4px}", cssmin(".rule { padding:   1px   2px   3px 
 is(".rule{padding:1px 2px 3px 4px}", cssmin(".rule { padding:   1px   2px   3px   4px   }"));
 
 
-is(".super > .parent > .child{}", cssmin(".super > .parent > .child { \n }"));
+is(".super>.parent>.child{}", cssmin(".super > .parent > .child { \n }"));
+is(".parent>[src]{}", cssmin(".parent > [src] { \n }"));
 is(".rule{}", cssmin(".rule { } /* commment */    "));
 is(".parent .child{-webkit-transform:translateX(200px)}", cssmin(".parent .child { \n-webkit-transform: translateX(200px); \n}"));
 is(".rule{color:#000;background:#fff}", cssmin(".rule { 
