@@ -109,6 +109,28 @@ static int cssmin_peek(cssmin_parser *parser)
     return EOF;
 }
 
+// http://www.w3.org/TR/CSS21/grammar.html#grammar
+static int may_be_a_simple_selector(char c)
+{
+    // element_name (nmstart)
+    if (isalpha(c)) {
+        return 1;
+    }
+
+    switch (c){
+        case '#': // HASH (id)
+        case '.': // class
+        case ':': // pseudo
+        case '[': // attrib
+        case '*': // element_name
+        case '-': // element_name
+        case '_': // element_name (nmstart)
+          return 1;
+    }
+
+    return 0;
+}
+
 static int cssmin_machine(cssmin_parser *parser, int c)
 {
     if (parser->state != STATE_COMMENT) {
@@ -139,6 +161,10 @@ static int cssmin_machine(cssmin_parser *parser, int c)
                         parser->state = STATE_ATRULE;
                     } else if (c == ' ' && cssmin_peek(parser) == '{') {
                         c = 0;
+                    } else if (c == ' ' && !may_be_a_simple_selector(cssmin_next_non_space_char(parser))) {
+                        c = 0;
+                    } else if (!isalpha(c) && cssmin_peek(parser) == ' ') {
+                        cssmin_strip_spaces(parser);
                     }
                 }
             }
