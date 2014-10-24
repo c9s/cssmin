@@ -21,6 +21,7 @@ is(".rule{}", cssmin(".rule {  }"));
 is(".rule{padding:1px 2px 3px 4px}", cssmin(".rule { padding: 1px 2px 3px 4px;}"));
 is(".rule{padding:1px 2px 3px 4px}", cssmin(".rule { padding:   1px 2px 3px 4px; }"));
 is(".rule{padding:1px 2px 3px 4px}", cssmin(".rule { padding:   1px   2px   3px   4px; }"));
+is(".rule{padding:1px 2px 3px 4px}", cssmin(".rule { padding:   1px   2px   3px   4px   }"));
 
 
 is(".super > .parent > .child{}", cssmin(".super > .parent > .child { \n }"));
