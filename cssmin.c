@@ -171,7 +171,7 @@ static int cssmin_machine(cssmin_parser *parser, int c)
                 return 0;
             } else if (c == ' ' && cssmin_peek(parser) == ';') {
                 return 0;
-            } else if (c == ';' && cssmin_next_non_space_char(parser) == '}' ) {
+            } else if ((c == ';' || c == ' ') && cssmin_next_non_space_char(parser) == '}' ) {
                 // ignore ";" of the last statment in the block
                 parser->state = STATE_BLOCK;
                 return 0;
