@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <ext/standard/php_smart_str.h>
 
+#define CSSMIN_SELECTOR 1
+
 typedef struct _cssmin_parser { 
     int theLookahead;
     int previous_state;
@@ -10,6 +12,7 @@ typedef struct _cssmin_parser {
     char * source;
     int pos;
     int source_len;
+    int options;
     smart_str *minified;
 } cssmin_parser;
 
