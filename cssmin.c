@@ -12,11 +12,20 @@
 #define STATE_PROPERTY_VALUE 6
 #define STATE_COMMENT 7
 
+#define OPTION_CSSMIN_SELECTOR 0
+
 static int cssmin_peek(cssmin_parser *parser);
 static int cssmin_peek2(cssmin_parser *parser);
 static int cssmin_get(cssmin_parser *parser);
 static void cssmin_advance(cssmin_parser *parser);
 static void cssmin_strip_spaces(cssmin_parser *parser);
+static int is_simple_selector(char c);
+static int option_enabled(cssmin_parser *parser, int pos);
+
+static int option_enabled(cssmin_parser *parser, int pos)
+{
+    return parser->options >> pos & 1;
+}
 
 static void cssmin_advance(cssmin_parser *parser)
 {
@@ -161,10 +170,12 @@ static int cssmin_machine(cssmin_parser *parser, int c)
                         parser->state = STATE_ATRULE;
                     } else if (c == ' ' && cssmin_peek(parser) == '{') {
                         c = 0;
-                    } else if (c == ' ' && !is_simple_selector(cssmin_next_non_space_char(parser))) {
-                        c = 0;
-                    } else if (!isalpha(c) && cssmin_peek(parser) == ' ') {
-                        cssmin_strip_spaces(parser);
+                    } else if (option_enabled(parser, OPTION_CSSMIN_SELECTOR)) {
+                        if (c == ' ' && !is_simple_selector(cssmin_next_non_space_char(parser))) {
+                            c = 0;
+                        } else if (!isalpha(c) && cssmin_peek(parser) == ' ') {
+                            cssmin_strip_spaces(parser);
+                        }
                     }
                 }
             }

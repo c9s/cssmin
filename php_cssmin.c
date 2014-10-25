@@ -31,9 +31,10 @@ ZEND_GET_MODULE(cssmin)
 PHP_FUNCTION(cssmin) {
     char *css;
     int  css_len;
+    long  options = 0;
     /* parse parameters */
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", 
-                    &css, &css_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", 
+                    &css, &css_len, &options) == FAILURE) {
         RETURN_FALSE;
     }
     cssmin_parser parser;
@@ -44,6 +45,7 @@ PHP_FUNCTION(cssmin) {
     parser.state = 1;
     parser.pos = 0;
     parser.in_paren = 0;
+    parser.options = options;
 
     smart_str minified = {0};
     parser.minified = &minified;
@@ -61,6 +63,7 @@ PHP_FUNCTION(cssmin) {
 }
 
 PHP_MINIT_FUNCTION(cssmin) {
+    REGISTER_LONG_CONSTANT("CSSMIN_SELECTOR", CSSMIN_SELECTOR, CONST_CS | CONST_PERSISTENT);
     return SUCCESS;
 }
 
