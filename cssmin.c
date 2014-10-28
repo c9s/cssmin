@@ -37,7 +37,7 @@ static void cssmin_advance(cssmin_parser *parser)
 
 static void cssmin_strip_spaces(cssmin_parser *parser) {
     char c;
-    while(true) {
+    while(1) {
         c = cssmin_peek(parser);
         if (!isspace(c)) {
             break;
@@ -54,7 +54,7 @@ static void cssmin_strip_comment(cssmin_parser *parser) {
         cssmin_advance(parser);
         char ch1;
         char ch2;
-        while(true) {
+        while(1) {
             ch1 = cssmin_get(parser);
             ch2 = cssmin_peek(parser);
             if (ch1 == '*' && ch2 == '/') {
