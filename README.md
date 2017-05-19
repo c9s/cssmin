@@ -1,13 +1,18 @@
-CSSMin - A simple & fast css minify extension 
+cssmin
 =============================================
+A simple fast css minification extension
+
+the master branch is for php7.
+
+See `php5` branch for the php5 extension.
+
+
 
 INSTALL
 ---------
 
 ```
-$ phpize
-$ ./configure
-$ make install
+phpize && ./configure && make install
 ```
 
 USAGE
