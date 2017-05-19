@@ -1,5 +1,5 @@
 #include "php.h"
-#include "ext/standard/php_smart_str.h"
+#include "ext/standard/php_smart_string.h"
 #include "ext/standard/info.h"
 #include "php_ini.h"
 #include "cssmin.h"
@@ -47,16 +47,17 @@ PHP_FUNCTION(cssmin) {
     parser.in_paren = 0;
     parser.options = options;
 
-    smart_str minified = {0};
+    smart_string minified = {0};
     parser.minified = &minified;
 
     cssmin(&parser);
 
-    smart_str_0(&minified);
+    smart_string_0(&minified);
 
     // RETURN_STRINGL(css, css_len, 1);
     if (minified.len) {
-        ZVAL_STRINGL(return_value, minified.c, minified.len, 0);
+        // ZVAL_STRINGL(return_value, minified.c, minified.len, 0);
+        RETVAL_STRINGL(minified.c, minified.len);
     } else {
         ZVAL_EMPTY_STRING(return_value);
     }

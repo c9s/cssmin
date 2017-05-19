@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <ext/standard/php_smart_str.h>
+#include <ext/standard/php_smart_string.h>
 #include "cssmin.h"
 
 #define STATE_FREE 1
@@ -280,7 +280,7 @@ void cssmin(cssmin_parser *parser)
         }
         c = cssmin_machine(parser, c);
         if (c != 0) {
-            smart_str_appendc(parser->minified, c);
+            smart_string_appendc(parser->minified, c);
         }
     }
 }

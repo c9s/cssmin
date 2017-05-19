@@ -13,7 +13,7 @@
 #include "php_globals.h"
 #include "php_main.h"
 #include "ext/standard/php_string.h"
-#include "ext/standard/php_smart_str.h"
+#include "ext/standard/php_smart_string.h"
 #include "ext/standard/php_string.h"
 #include "php_globals.h"
 
