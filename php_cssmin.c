@@ -49,18 +49,12 @@ PHP_FUNCTION(cssmin) {
 
     smart_string minified = {0};
     parser.minified = &minified;
-
     cssmin(&parser);
 
     smart_string_0(&minified);
 
-    // RETURN_STRINGL(css, css_len, 1);
-    if (minified.len) {
-        // ZVAL_STRINGL(return_value, minified.c, minified.len, 0);
-        RETVAL_STRINGL(minified.c, minified.len);
-    } else {
-        ZVAL_EMPTY_STRING(return_value);
-    }
+    RETVAL_STRINGL(minified.c, minified.len);
+    smart_string_free(&minified);
 }
 
 PHP_MINIT_FUNCTION(cssmin) {
