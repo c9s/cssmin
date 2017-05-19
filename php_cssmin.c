@@ -30,11 +30,10 @@ ZEND_GET_MODULE(cssmin)
 
 PHP_FUNCTION(cssmin) {
     char *css;
-    int  css_len;
+    size_t css_len;
     long  options = 0;
     /* parse parameters */
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", 
-                    &css, &css_len, &options) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &css, &css_len, &options) == FAILURE) {
         RETURN_FALSE;
     }
     cssmin_parser parser;
