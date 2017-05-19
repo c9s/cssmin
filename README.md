@@ -2,6 +2,8 @@ cssmin
 =============================================
 A simple fast css minification extension
 
+[![Build Status](https://travis-ci.org/c9s/cssmin.svg?branch=master)](https://travis-ci.org/c9s/cssmin)
+
 the master branch is for php7.
 
 See `php5` branch for the php5 extension.
